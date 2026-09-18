@@ -1,14 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { CloseIcon, CheckIcon, EyeOpenIcon, EyeClosedIcon } from "../../assets/icons";
+import users from "../../data/users";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmailFound, setIsEmailFound] = useState(false)
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState("");
   const [status, setStatus] = useState("idle");
+
 
   const navigate = useNavigate();
 
@@ -22,18 +24,18 @@ function Login() {
   }, []);
 
   const validate = () => {
-    const newErrors = {};
-
     if (!email.trim()) {
-      newErrors.email = "Email is required";
+      setError("Email is required");
+      return false;
     }
 
     if (!password.trim()) {
-      newErrors.password = "Password is required";
+      setError("Password is required");
+      return false;
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setError("");
+    return true;
   };
 
   const handleSubmit = async (e) => {
@@ -42,7 +44,23 @@ function Login() {
     if (!validate()) return;
 
     setStatus("loading");
-    await new Promise((r) => setTimeout(r, 1500));
+
+    const user = users.find((u) => u.email === email && u.password === password);
+
+    await new Promise((r) => setTimeout(r, 1000));
+
+    if(!user) {
+      setError("Invalid credentials")
+      setStatus("idle")
+      return;
+
+    }
+
+     if(user.frozen) {
+      navigate("/account-frozen")
+      setStatus("idle")
+      return;
+     }
 
     localStorage.setItem("userEmail", email);
 
@@ -52,7 +70,7 @@ function Login() {
   const handleSwitchAccount = () => {
     localStorage.removeItem("userEmail");
     setPassword("");
-    setErrors({});
+    setError("");
     setIsEmailFound(false)
   };
 
@@ -74,31 +92,32 @@ function Login() {
             {!isEmailFound && (
               <div className="input-group">
                 <label>E-mail</label>
-                <div className={`input-wrapper ${errors.email ? "error" : ""} ${email && !errors.email ? "confirmed" : ""}`}>
+                <div className={`input-wrapper ${error ? "error" : ""} ${email && !error ? "confirmed" : ""}`}>
                   <input
                     type="email"
                     placeholder="Enter e-mail"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  {email && !errors.email && <span className="input-icon confirm"><CheckIcon /></span>}
-                  {errors.email && <span className="input-icon error"><CloseIcon /></span>}
+                  {email && !error && <span className="input-icon confirm"><CheckIcon /></span>}
+                  {error && <span className="input-icon error"><CloseIcon /></span>}
                 </div>
-                {errors.email && <span className="field-error">{errors.email}</span>}
               </div>
             )}
 
+            {error && <p className="field-error">{error}</p>}
+
             <div className="input-group">
               <label>Password</label>
-              <div className={`input-wrapper password-wrapper ${errors.password ? "error" : ""} ${password && !errors.password ? "confirmed" : ""}`}>
+              <div className={`input-wrapper password-wrapper ${error ? "error" : ""} ${password && !error ? "confirmed" : ""}`}>
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                {password && !errors.password && <span className="input-icon confirm"><CheckIcon /></span>}
-                {errors.password && <span className="input-icon error"><CloseIcon /></span>}
+                {password && !error && <span className="input-icon confirm"><CheckIcon /></span>}
+                {error && <span className="input-icon error"><CloseIcon /></span>}
                 <button
                   type="button"
                   className="eye-toggle"
@@ -108,7 +127,6 @@ function Login() {
                   {showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
                 </button>
               </div>
-              {errors.password && <span className="field-error">{errors.password}</span>}
             </div>
           </div>
 

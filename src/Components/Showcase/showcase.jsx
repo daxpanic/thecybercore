@@ -1,8 +1,9 @@
-import Login from "../Login/login.jsx";
-import Recovery from "../Recovery/recovery.jsx";
-import RecoverySent from "../RecoverySent/recoverySent.jsx";
-import NewPassword from "../NewPassword/newPassword.jsx";
-import ChangePassword from "../ChangePassword/changePassword.jsx";
+import Login from "Components/Login/login.jsx";
+import Recovery from "Components/Recovery/recovery.jsx";
+import RecoverySent from "Components/RecoverySent/recoverySent.jsx";
+import NewPassword from "Components/NewPassword/newPassword.jsx";
+import ChangePassword from "Components/ChangePassword/changePassword.jsx";
+import AccountFrozen from "Components/AccountFrozen/accountFrozen.jsx";
 
 function Showcase() {
   return (
@@ -28,6 +29,11 @@ function Showcase() {
         <div className="showcase-item">
           <h2>Recovery Sent</h2>
           <RecoverySent />
+        </div>
+
+        <div className="showcase-item">
+          <h2>Account Frozen</h2>
+          <AccountFrozen />
         </div>
 
         <div className="showcase-item">

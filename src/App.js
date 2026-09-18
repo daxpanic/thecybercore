@@ -8,6 +8,7 @@ import RecoverySent from './Components/RecoverySent/recoverySent.jsx';
 import NewPassword from './Components/NewPassword/newPassword.jsx';
 import ChangePassword from './Components/ChangePassword/changePassword.jsx';
 import Showcase from './Components/Showcase/showcase.jsx';
+import AccountFrozen from './Components/AccountFrozen/accountFrozen.jsx';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/account-frozen" element={<AccountFrozen />} />
         <Route path="/register" element={<Register />} />
         <Route path="/success" element={<Success />} />
         <Route path="/forgot-password" element={<Recovery mode="password" />} />
